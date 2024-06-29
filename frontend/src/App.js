@@ -10,6 +10,9 @@ import Login from "./pages/Login.jsx";
 import Tasks from "./pages/Tasks.jsx";
 import SignupForm from "./Components/Form.jsx";
 import ItemForm from "./Components/ItemForm.jsx";
+import PayPalCheckout from './Components/PayPal.jsx'
+import TaskDetail from "./Components/TaskDetail.jsx";
+
 
 const App = () => {
   return (
@@ -20,6 +23,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/form" element={<SignupForm />} />
             <Route path="/itemform" element={<ItemForm />} />
+            <Route path="/pay" element={<PayPalCheckout />} />
 
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Tasks />} />
@@ -27,6 +31,7 @@ const App = () => {
               <Route path="/accepted/:status" element={<Tasks />} />
               <Route path="/pickup/:status" element={<Tasks />} />
               <Route path="/payment/:status" element={<Tasks />} />{" "}
+              <Route path="/task/:id" element={<TaskDetail />} />
             </Route>
             <Route path="/log-in" element={<Login />} />
           </Routes>
