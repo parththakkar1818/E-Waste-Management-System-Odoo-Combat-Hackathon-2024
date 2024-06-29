@@ -2,10 +2,10 @@ from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from bson import ObjectId
 from pydantic import BaseModel, Field
+from e_waste_formulas import calculate_e_waste_metrics  # Import the function
 from typing import List, Literal
 import json
 from fastapi.middleware.cors import CORSMiddleware
-from e_waste_formulas import calculate_e_waste_metrics  # Import the function
 
 app = FastAPI()
 
@@ -96,8 +96,70 @@ async def get_admin_collections(admin_id: str):
         return [doc_to_dict(doc) for doc in collections]
     else:
         raise HTTPException(status_code=404, detail="No collections found for this admin_id")
+        
+@app.put("/accept")
+async def accept_collection(request: UpdateRequest):
+    filter_query = {"user_id": request.user_id}
+    update_query = {
+        "$inc": {"stage": 1},
+        "$set": {"user_id": request.user_id}
+    }
+    
+    result = collection_collection.update_one(filter_query, update_query)
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="No matching collection found or no changes made")
 
+    updated_doc = collection_collection.find_one(filter_query)
+    return doc_to_dict(updated_doc)
 
+@app.put("/pickup")
+async def pickup_collection(request: UpdateRequest):
+    filter_query = {"user_id": request.user_id}
+    update_query = {
+        "$inc": {"stage": 1},
+        "$set": {"user_id": request.user_id}
+    }
+    
+    result = collection_collection.update_one(filter_query, update_query)
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="No matching collection found or no changes made")
+
+    updated_doc = collection_collection.find_one(filter_query)
+    return doc_to_dict(updated_doc)
+
+  
+@app.put("/payment")
+async def payment_collection(request: PaymentRequest):
+    filter_query = {"user_id": request.user_id}
+    
+    # Fetch the current document to get the e_waste_type and e_waste_weight
+    current_doc = collection_collection.find_one(filter_query)
+    if not current_doc:
+        raise HTTPException(status_code=404, detail="No matching collection found")
+    
+    e_waste_type = current_doc.get("e_waste_type")
+    e_waste_weight = current_doc.get("e_waste_weight")
+    
+    # Calculate the metrics using the imported function
+    metrics = calculate_e_waste_metrics(e_waste_type, e_waste_weight)
+    
+    update_query = {
+        "$inc": {"stage": 1},
+        "$set": {
+            "price": request.price,
+            "co2": metrics["co2"],
+            "cu": metrics["cu"],
+            "alum": metrics["alum"],
+            "Equivalent_Driving_Distance": metrics["Equivalent_Driving_Distance"]
+        }
+    }
+    
+    result = collection_collection.update_one(filter_query, update_query)
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="No matching collection found or no changes made")
+
+    updated_doc = collection_collection.find_one(filter_query)
+    return doc_to_dict(updated_doc)
 
 @app.get("/home_analytics")
 async def home_analytics():
@@ -240,3 +302,9 @@ async def user_analytics(user_id: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="localhost", port=8000)  
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="localhost", port=8000)
