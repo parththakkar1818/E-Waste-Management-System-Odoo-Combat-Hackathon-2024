@@ -70,6 +70,15 @@ async def get_user_collections(user_id: str):
     else:
         raise HTTPException(status_code=404, detail="No collections found for this user_id")
 
+@app.get("/get_task/{task_id}")
+async def get_task(task_id: str):
+    collections = collection_collection.find({"_id": ObjectId(task_id)})
+    if collections:
+        return [doc_to_dict(doc) for doc in collections]
+    else:
+        raise HTTPException(status_code=404, detail="No collections found for this user_id")
+
+
 @app.get("/get_stage_1_collections/")
 async def get_stage_1_collections():
     collections = collection_collection.find({"stage": 1})
