@@ -29,7 +29,6 @@ class UserAdminInfo(BaseModel):
     is_admin: bool
 
 class Collection(BaseModel):
-    id: str 
     user_id: str
     type: str
     e_waste_weight: float
