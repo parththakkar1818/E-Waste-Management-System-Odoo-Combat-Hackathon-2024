@@ -8,6 +8,8 @@ import Navbar from "./Components/Navbar.jsx";
 import Sidebar from "./Components/Sidebar.jsx";
 import Login from "./pages/Login.jsx";
 import Tasks from "./pages/Tasks.jsx";
+import SignupForm from "./Components/Form.jsx";
+import ItemForm from "./Components/ItemForm.jsx";
 
 const App = () => {
   return (
@@ -15,7 +17,9 @@ const App = () => {
       <Router>
         <main className="w-full min-h-screen bg-[#f3f4f6]">
           <Routes>
-          <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/form" element={<SignupForm />} />
+            <Route path="/itemform" element={<ItemForm />} />
 
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Tasks />} />
@@ -54,29 +58,3 @@ function Layout() {
     <Navigate to="/log-in" state={{ from: location }} replace />
   );
 }
-
-// function App() {
-//   return (
-//     <>
-//     <main className='w-full min-h-screen bg-[#f3f4f6]'>
-//     <Routes>
-//         <Route element={<Layout/>}>
-//           <Route path='/' element={<Navigate to='/home'/>}/>
-//           <Route path='/home' element={<Home/>}/>
-//           <Route path='/dashboard' element={<Dashboard/>}/>
-//           <Route path='/requests' element={<Tasks/>}/>
-//           <Route path='/pending/:status' element={<Tasks/>}/>
-//           <Route path='/accepted/:status' element={<Tasks/>}/>
-//           <Route path='/pickup/:status' element={<Tasks/>}/>
-//           <Route path='/payment/:status' element={<Tasks/>}/>
-
-//         </Route>
-//         <Route path='/log-in' element={<Login/>}/>
-//     </Routes>
-//         {/* <Toaster richColors  /> */}
-//   </main>
-//   </>
-//   );
-// }
-
-// export default App;

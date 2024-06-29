@@ -4,6 +4,7 @@ from bson import ObjectId
 from pydantic import BaseModel, Field
 from typing import List
 import json
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -12,6 +13,14 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client['E-waste']
 user_admin_info_collection = db['user_admin_info']
 collection_collection = db['Collection']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # replace with the list of allowed origins if you know them
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Custom JSON encoder to handle ObjectId
 class CustomJSONEncoder(json.JSONEncoder):
@@ -30,11 +39,12 @@ class UserAdminInfo(BaseModel):
     
 class Collection(BaseModel):
     user_id: str
-    type: str
+    e_waste_type: str
     e_waste_weight: float
     prefdate: str
+    prefTime: str
     stage: int = 1
-    clerk_id: int = 0
+    admin_id: str
     price:int=0
 
 # Helper function to convert MongoDB document to dict
@@ -72,3 +82,10 @@ async def get_admin_collections(admin_id: str):
         return [doc_to_dict(doc) for doc in collections]
     else:
         raise HTTPException(status_code=404, detail="No collections found for this admin_id")
+
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="localhost", port=8000)
