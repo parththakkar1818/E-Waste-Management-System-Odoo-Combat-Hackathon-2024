@@ -60,7 +60,6 @@ const Tasks = () => {
 
   return (
     <>
-    <button onClick={getAllTasks}>Click here</button>
       <div className="flex items-center justify-between mb-4">
         <Title title={status ? `${status} Requests` : "All Requests"} />
         {!status && (
