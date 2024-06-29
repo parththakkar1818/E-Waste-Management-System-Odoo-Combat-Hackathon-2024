@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { getTasks } from "../IndexDB/IndexDB";
 import { useUser } from "@clerk/clerk-react";
 
-
 const TaskCard = ({ type, e_waste_weight, prefdate, onClick }) => {
   return (
     <div className="w-80 h-48 bg-white shadow-2xl p-4 rounded-xl flex flex-col justify-between">
@@ -33,7 +32,9 @@ const TaskList = () => {
   const navigate = useNavigate();
   const params = useParams();
   const status = params?.status || "";
-  
+  const isAdmin = localStorage.getItem("is_admin");
+  console.log("isadmin,", isAdmin);
+
   const { isLoaded, isSignedIn, user } = useUser();
   // console.log(isSignedIn);
   console.log(user?.id);
@@ -43,14 +44,15 @@ const TaskList = () => {
 
   const [tasks, setTasks] = useState([]);
   const getAllTasks = async () => {
+    const backendLink =
+      isAdmin === "1"
+        ? `http://localhost:8000/get_stage_1_collections`
+        : `http://localhost:8000/get_user_collections/${user.id}`;
     try {
-      const response = await fetch(
-        `http://localhost:8000/get_user_collections/${user.id}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await fetch(backendLink, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -65,7 +67,7 @@ const TaskList = () => {
 
         // Update state with tasks
         setTasks(data);
-        console.log("tasks from 68: ",tasks);
+        console.log("tasks from 68: ", tasks);
       } else {
         console.error("Failed to fetch tasks.");
       }
@@ -82,24 +84,30 @@ const TaskList = () => {
   console.log(status);
   return (
     <div className="w-full py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 2xl:gap-10">
-      {tasks===null? (
+      {tasks === null ? (
         <div>
           <h1>No tasks available</h1>
         </div>
       ) : (
-        tasks.map((task, index) => (
-          <TaskCard
-            key={index}
-            type={task.type}
-            e_waste_weight={task.e_waste_weight}
-            prefdate={task.prefdate}
-            onClick={() => navigate(`/task/${task.clerk_id}`)}
-          />
-        ))
+        tasks.map(
+          (task, index) =>
+            (status === "" ||
+              (task.stage === 1 && status === "pending") ||
+              (task.stage === 2 && status === "accepted") ||
+              (task.stage === 3 && status === "pickup") ||
+              (task.stage === 4 && status === "payment")) && (
+              <TaskCard
+                key={index}
+                type={task.type}
+                e_waste_weight={task.e_waste_weight}
+                prefdate={task.prefdate}
+                onClick={() => navigate(`/task/${task._id}`)}
+              />
+            )
+        )
       )}
     </div>
   );
-
 };
 
 export default TaskList;

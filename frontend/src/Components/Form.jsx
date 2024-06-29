@@ -35,6 +35,14 @@ const SignupForm = () => {
       is_admin: formData.signUpAs === "Recycler",
     };
     console.log("here payload: ", payload);
+    console.log(payload[]);
+    if(formData.signUpAs === "Recycler"){
+      localStorage.setItem("is_admin",0);
+    }
+    else{
+      localStorage.setItem("is_admin", 1);
+
+    }
 
     try {
       const response = await fetch(
