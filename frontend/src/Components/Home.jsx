@@ -35,8 +35,14 @@ const Home = () => {
               </div>
             ) : (
               <div className="flex flex-row items-center space-x-4 m-2 px-[100px]">
-                <SignInButton className="bg-blue-600 text-white px-4 py-2 mx-1 rounded-md shadow-md hover:bg-blue-700 transition duration-300" />
-                <SignUpButton className="bg-blue-600 text-white px-4 py-2 mx-1 rounded-md shadow-md hover:bg-blue-700 transition duration-300" />
+                <SignInButton
+                  forceRedirectUrl="/dashboard"
+                  className="bg-blue-600 text-white px-4 py-2 mx-1 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+                />
+                <SignUpButton
+                  forceRedirectUrl="/dashboard"
+                  className="bg-blue-600 text-white px-4 py-2 mx-1 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+                />
               </div>
             )}
           </div>

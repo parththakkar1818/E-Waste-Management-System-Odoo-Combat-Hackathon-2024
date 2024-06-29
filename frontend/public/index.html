@@ -40,4 +40,19 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script>
+    // Fetch the client ID from an environment variable
+    const paypal_key = "AaeFLLmGoev7m5IB_hr9G5uPBpxZ42FgqO2hLruaCws0h6Ph4dawt75x8ym3a8N3RXDIisfIf_RxCC9";
+    
+
+    
+    // Create a script element
+    var script = document.createElement("script");
+
+    // Set the script's src attribute to include the PayPal SDK with the client ID
+    script.src = `https://www.paypal.com/sdk/js?client-id=${paypal_key}`;
+
+    // Append the script to the document head
+    document.head.appendChild(script);
+  </script>
 </html>

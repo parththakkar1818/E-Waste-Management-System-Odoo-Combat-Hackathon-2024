@@ -17,7 +17,7 @@ import { Link, useLocation } from 'react-router-dom';
 const linkData = [
     {
         label:"All Requests",
-        link:"requests",
+        link:"dashboard",
         icon:<IoGitPullRequestSharp/>,
     },
     {
