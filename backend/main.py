@@ -27,15 +27,15 @@ class UserAdminInfo(BaseModel):
     address: str
     mobile_no: str
     is_admin: bool
-
+    
 class Collection(BaseModel):
-    id: str 
     user_id: str
     type: str
     e_waste_weight: float
     prefdate: str
     stage: int = 1
     clerk_id: int = 0
+    price:int=0
 
 # Helper function to convert MongoDB document to dict
 def doc_to_dict(doc):
